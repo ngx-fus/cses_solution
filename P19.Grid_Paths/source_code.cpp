@@ -79,7 +79,7 @@ bool visit(point curPoint = {1,1}, int step = 0){
 int32_t main(){
     ios_base::sync_with_stdio(false);
     cin.tie(0);
-    //freopen(  "input", "r", stdin);
+    freopen(  "input", "r", stdin);
     //freopen(  "output", "w", stdout);
     cin >> direction;
     visit();
