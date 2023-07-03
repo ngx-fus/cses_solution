@@ -49,7 +49,7 @@ void show(){
  
 bool visit(point curPoint = {1,1}, int step = 0){
     mark(curPoint);
-    //show();
+    show();
     //success in visiting to point(7,1)
     if( curPoint == point(7,1)) {
         unmark(curPoint);
@@ -60,8 +60,8 @@ bool visit(point curPoint = {1,1}, int step = 0){
     /*If the path touches a wall and can turn either left or right, the grid 
     splits into two parts that contain unvisited squares. In this case, we cannot 
     visit all squares anymore, so we can terminate the search.*/
-    if( in_the_wall && can_move_left && can_move_right) goto end_the_path;
-    if( in_the_wall && can_move_up && can_move_down) goto end_the_path;
+    if( (!can_move_down && a(curPoint+point(1,0))-a(curPoint) != 1) && can_move_left && can_move_right) goto end_the_path;
+    if( (!can_move_right || !can_move_left) && can_move_up && can_move_down) goto end_the_path;
     //
     if( (direction[step] == 'R' || direction[step] == '?') && can_move_right ) 
         visit(curPoint + point(0, 1), step+1);
@@ -80,7 +80,7 @@ int32_t main(){
     ios_base::sync_with_stdio(false);
     cin.tie(0);
     freopen(  "input", "r", stdin);
-    //freopen(  "output", "w", stdout);
+    freopen(  "output", "w", stdout);
     cin >> direction;
     visit();
     cout << res << endl;
