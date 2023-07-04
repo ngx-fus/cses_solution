@@ -2,7 +2,7 @@
 #define rep(i,a,b) for(int i=a; i<=b; i++)
 using namespace std;
 
-int A[9][9] = {
+int A[11][11] = {
                             {-1, -1, -1,  -1,  -1,  -1,  -1,  -1,  -1}, // <- row = 0
                             {-1,  0,   0,   0,    0,   0,   0,    0,  -1},
                             {-1,  0,   0,   0,    0,   0,   0,    0,  -1},
@@ -17,66 +17,39 @@ int A[9][9] = {
                         };
 int res = 0;
 string S;
-int D[49]; // 1: right - 2: up - 3: left - 4: down
 
 #define mark(x,y) A[x][y] = step+1
 #define unmark(x,y) A[x][y] = 0
-void show(){
-    rep(i,0,8){
-        rep(j,0,8){
-            cout <<A[i][j] << '\t';
-        }
-        cout << endl;
-    }
-    cout << endl;
-}
+
 
 bool try_(int x = 1, int y = 1, int step = 0){
     if( A[x][y] != 0 ) return false;
-    if( x==7 && y== 1 )
+    if( x==7 && y== 1 ){
         if( step == 48)
             return ++res;
         else 
             return false;
+    }
     mark(x,y);
-    show();
+    /*  0  #
+    #--@ -#
+       0  #      #:wall
+    */
+    if( A[x][y+1] && A[x][y-1] && !A[x+1][y] && !A[x-1][y]) goto end_the_path;
+    /* #         @: you
+    0 @ 0       0: can move
+    # # #      #: wall
+    */
+    if( A[x-1][y] && A[x+1][y] && !A[x][y+1] && !A[x][y-1]) goto end_the_path;
+    //move right
+    if( !A[x][y+1] && (S[step]=='?' || S[step]=='R') ) try_(x, y+1, step+1);
+    //move left
+    if( !A[x][y-1] && (S[step]=='?' || S[step]=='L') ) try_(x, y-1, step+1);
+    //move up
+    if( !A[x-1][y] && (S[step]=='?' || S[step]=='U') ) try_(x-1, y, step+1);
+    //move down
+    if( !A[x+1][y] && (S[step]=='?' || S[step]=='D') ) try_(x+1, y, step+1);
 
-    //right
-    if(S[step]=='?' || D[step]=='R'){
-        if( A[x][y+1] == 0) 
-            try_(x, y+1, step+1);
-        else{
-            if( (A[x][y]-A[x][y+1]>1) && (!A[x-1][y]) && (!A[x+1][y]) )
-                goto end_the_path;
-        }
-    }
-    //left
-    if(S[step]=='?' || D[step]=='L'){
-        if( A[x][y-1] == 0) 
-            try_(x,y-1,step+1);
-        else{
-            if( A[x][y]-A[x][y-1]>1 && !A[x-1][y] && !A[x+1][y] ) 
-                goto end_the_path;
-        }
-    }
-    //up
-    if(S[step]=='?' || D[step]=='U'){
-        if( !A[x-1][y] ) 
-            try_(x-1,y,step+1);
-        else
-            if( A[x-1][y]-A[x][y]>1 && !A[x][y-1] && !A[x][y+1])
-                goto end_the_path;
-    }
-    //down
-    if( S[step]=='?' || D[step]=='D'){
-        if( !A[x+1][y] ){
-            try_(x+1, y, step+1);
-        }else{
-            if( A[x+1][y]-A[x][y]>1 && !A[x][y+1] && !A[x][y-1] ){
-                goto end_the_path;
-            }
-        }
-    }
     end_the_path:
     unmark(x,y);
     return false;
